@@ -101,9 +101,13 @@ function purchased(id) {
           console.log("No purchase made.");
           backToMenu();
         } else if (quantityPurchased <= res[0].stock_quantity) {
-          console.log('\033[2J');
-          console.log(`Thank you for your purchase of ${quantityPurchased} ${res[0].product_name} for $${res[0].price * quantityPurchased}\n`);
-          start();
+          connection.query("UPDATE inventory SET stock_quantity = ? WHERE id = ?", [res[0].stock_quantity - quantityPurchased, 
+          res[0].id], (err, response) => {
+            if (err) throw err
+            console.log('\033[2J');
+            console.log(`Thank you for your purchase of ${quantityPurchased} ${res[0].product_name} for $${res[0].price * quantityPurchased}\n`);
+            start();
+            });
         } else {
           console.log('\033[2J');
           console.log("I am sorry, but I do not have that many.");
